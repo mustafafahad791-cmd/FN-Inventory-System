@@ -9,6 +9,7 @@ import DashboardPage from './pages/DashboardPage';
 import BranchListPage from './pages/BranchListPage';
 import ItemListPage from './pages/ItemListPage';
 import EntryTemplateListPage from './pages/EntryTemplateListPage';
+import InventoryListPage from './pages/InventoryListPage';
 
 function App() {
   return (
@@ -50,6 +51,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <EntryTemplateListPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/inventory" 
+              element={
+                <ProtectedRoute>
+                  <InventoryListPage />
                 </ProtectedRoute>
               } 
             />
