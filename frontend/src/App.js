@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import BranchListPage from './pages/BranchListPage';
+import ItemListPage from './pages/ItemListPage';
 
 function App() {
   return (
@@ -32,6 +33,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <BranchListPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/items" 
+              element={
+                <ProtectedRoute>
+                  <ItemListPage />
                 </ProtectedRoute>
               } 
             />

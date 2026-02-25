@@ -52,11 +52,13 @@ const DashboardPage = () => {
 
         {/* Feature Cards */}
         <div className="feature-grid">
-          <div className="feature-card coming-soon">
+          <div className="feature-card">
             <div className="card-icon">📦</div>
             <h3>Items</h3>
             <p>Manage master products</p>
-            <span className="badge">Coming Soon</span>
+            <button className="card-button" onClick={() => navigate('/items')}>
+              Go to Items →
+            </button>
           </div>
 
           <div className="feature-card">

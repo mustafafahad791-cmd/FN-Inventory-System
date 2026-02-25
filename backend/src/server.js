@@ -18,7 +18,8 @@ app.get('/api/health', (req, res) => {
 // Routes
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/branches', require('./routes/branches'));
-// app.use('/api/items', require('./routes/items'));
+app.use('/api/items', require('./routes/items'));
+// app.use('/api/entry-templates', require('./routes/entryTemplates'));
 // etc.
 
 // Error handling middleware

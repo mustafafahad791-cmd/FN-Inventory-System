@@ -17,7 +17,18 @@ export const authService = {
   updateBranch: (id, data) => apiClient.put(`/branches/${id}`, data),
   deactivateBranch: (id) => apiClient.delete(`/branches/${id}`),
   searchBranches: (query) => apiClient.get(`/branches/search?q=${query}`),
-  getBranchStats: (id) => apiClient.get(`/branches/${id}/stats`)
+  getBranchStats: (id) => apiClient.get(`/branches/${id}/stats`),
+
+  // Item Management Services
+  getItems: () => apiClient.get('/items'),
+  getItemById: (id) => apiClient.get(`/items/${id}`),
+  createItem: (data) => apiClient.post('/items', data),
+  updateItem: (id, data) => apiClient.put(`/items/${id}`, data),
+  deactivateItem: (id) => apiClient.delete(`/items/${id}`),
+  searchItems: (query) => apiClient.get(`/items/search?q=${query}`),
+  getItemsByCategory: (category) => apiClient.get(`/items/category/${category}`),
+  getItemCategories: () => apiClient.get('/items/categories/all'),
+  getItemStats: () => apiClient.get('/items/stats')
 };
 
 // Branch Services
