@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import '../styles/DashboardPage.css';
 
 const DashboardPage = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [showProfile, setShowProfile] = useState(false);
 
   const handleLogout = () => {
@@ -57,11 +59,13 @@ const DashboardPage = () => {
             <span className="badge">Coming Soon</span>
           </div>
 
-          <div className="feature-card coming-soon">
+          <div className="feature-card">
             <div className="card-icon">🏢</div>
             <h3>Branches</h3>
             <p>Manage store locations</p>
-            <span className="badge">Coming Soon</span>
+            <button className="card-button" onClick={() => navigate('/branches')}>
+              Go to Branches →
+            </button>
           </div>
 
           <div className="feature-card coming-soon">

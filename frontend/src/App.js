@@ -6,6 +6,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
+import BranchListPage from './pages/BranchListPage';
 
 function App() {
   return (
@@ -23,6 +24,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <DashboardPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/branches" 
+              element={
+                <ProtectedRoute>
+                  <BranchListPage />
                 </ProtectedRoute>
               } 
             />

@@ -8,7 +8,16 @@ export const authService = {
   verify: () => apiClient.get('/auth/verify'),
   getCurrentUser: () => apiClient.get('/auth/me'),
   updateProfile: (data) => apiClient.put('/auth/profile', data),
-  getAllUsers: () => apiClient.get('/auth/users')
+  getAllUsers: () => apiClient.get('/auth/users'),
+  
+  // Branch Management Services
+  getBranches: () => apiClient.get('/branches'),
+  getBranchById: (id) => apiClient.get(`/branches/${id}`),
+  createBranch: (data) => apiClient.post('/branches', data),
+  updateBranch: (id, data) => apiClient.put(`/branches/${id}`, data),
+  deactivateBranch: (id) => apiClient.delete(`/branches/${id}`),
+  searchBranches: (query) => apiClient.get(`/branches/search?q=${query}`),
+  getBranchStats: (id) => apiClient.get(`/branches/${id}/stats`)
 };
 
 // Branch Services
@@ -61,7 +70,7 @@ export const customerService = {
   getPurchaseHistory: (customerId) => apiClient.get(`/customers/${customerId}/history`)
 };
 
-export default {
+const apiServices = {
   authService,
   branchService,
   itemService,
@@ -70,3 +79,5 @@ export default {
   receiptService,
   customerService
 };
+
+export default apiServices;
