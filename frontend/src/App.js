@@ -13,6 +13,7 @@ import InventoryListPage from './pages/InventoryListPage';
 import TransferListPage from './pages/TransferListPage';
 import ReceiptListPage from './pages/ReceiptListPage';
 import CustomerLogPage from './pages/CustomerLogPage';
+import SystemLogPage from './pages/SystemLogPage';
 
 function App() {
   return (
@@ -86,6 +87,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <CustomerLogPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/system-logs" 
+              element={
+                <ProtectedRoute>
+                  <SystemLogPage />
                 </ProtectedRoute>
               } 
             />

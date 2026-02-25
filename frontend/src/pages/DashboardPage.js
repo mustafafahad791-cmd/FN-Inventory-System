@@ -114,6 +114,15 @@ const DashboardPage = () => {
               Go to Customers →
             </button>
           </div>
+
+          <div className="feature-card">
+            <div className="card-icon">📋</div>
+            <h3>System Logs</h3>
+            <p>Audit trail & monitoring</p>
+            <button className="card-button" onClick={() => navigate('/system-logs')}>
+              Go to Logs →
+            </button>
+          </div>
         </div>
 
         {/* Quick Stats */}

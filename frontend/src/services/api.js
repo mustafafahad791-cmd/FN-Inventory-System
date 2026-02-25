@@ -121,6 +121,21 @@ export const customerLogService = {
   getAcquisitionTrends: () => apiClient.get('/customer-logs/acquisition-trends')
 };
 
+// System Log Services
+export const systemLogService = {
+  getAll: (params) => apiClient.get('/system-logs', { params }),
+  logAction: (data) => apiClient.post('/system-logs', data),
+  getByDateRange: (startDate, endDate) => apiClient.get('/system-logs/date-range', { params: { startDate, endDate } }),
+  getByEntity: (entityId) => apiClient.get(`/system-logs/entity/${entityId}`),
+  getByUser: (userId) => apiClient.get(`/system-logs/user/${userId}`),
+  getByBranch: (branchId) => apiClient.get(`/system-logs/branch/${branchId}`),
+  getStats: () => apiClient.get('/system-logs/stats'),
+  getActionBreakdown: () => apiClient.get('/system-logs/action-breakdown'),
+  getEntityBreakdown: () => apiClient.get('/system-logs/entity-breakdown'),
+  getErrors: (limit = 50) => apiClient.get('/system-logs/errors', { params: { limit } }),
+  getHealthSummary: () => apiClient.get('/system-logs/health-summary')
+};
+
 const apiServices = {
   authService,
   branchService,
@@ -130,7 +145,8 @@ const apiServices = {
   transferService,
   receiptService,
   customerService,
-  customerLogService
+  customerLogService,
+  systemLogService
 };
 
 export default apiServices;
