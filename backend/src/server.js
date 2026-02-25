@@ -26,6 +26,7 @@ app.use('/api/receipts', require('./routes/receipts'));
 app.use('/api/customers', require('./routes/customers'));
 app.use('/api/customer-logs', require('./routes/customer-logs'));
 app.use('/api/system-logs', require('./routes/system-logs'));
+app.use('/api/analytics', require('./routes/analytics'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {

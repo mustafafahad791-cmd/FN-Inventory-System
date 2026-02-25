@@ -14,6 +14,7 @@ import TransferListPage from './pages/TransferListPage';
 import ReceiptListPage from './pages/ReceiptListPage';
 import CustomerLogPage from './pages/CustomerLogPage';
 import SystemLogPage from './pages/SystemLogPage';
+import AnalyticsDashboardPage from './pages/AnalyticsDashboardPage';
 
 function App() {
   return (
@@ -95,6 +96,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <SystemLogPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/analytics" 
+              element={
+                <ProtectedRoute>
+                  <AnalyticsDashboardPage />
                 </ProtectedRoute>
               } 
             />

@@ -136,6 +136,17 @@ export const systemLogService = {
   getHealthSummary: () => apiClient.get('/system-logs/health-summary')
 };
 
+// Analytics Services
+export const analyticsService = {
+  getDashboardAnalytics: (days = 30) => apiClient.get('/analytics/dashboard', { params: { days } }),
+  getSalesReport: (startDate, endDate, branchId) => apiClient.get('/analytics/sales-report', { params: { startDate, endDate, branchId } }),
+  getInventoryReport: (branchId) => apiClient.get('/analytics/inventory-report', { params: { branchId } }),
+  getProductPerformance: (days = 30) => apiClient.get('/analytics/product-performance', { params: { days } }),
+  getCustomerSegmentation: () => apiClient.get('/analytics/customer-segmentation'),
+  getTransferAnalytics: (days = 30) => apiClient.get('/analytics/transfer-analytics', { params: { days } }),
+  getKPIs: (days = 30) => apiClient.get('/analytics/kpis', { params: { days } })
+};
+
 const apiServices = {
   authService,
   branchService,
@@ -146,7 +157,8 @@ const apiServices = {
   receiptService,
   customerService,
   customerLogService,
-  systemLogService
+  systemLogService,
+  analyticsService
 };
 
 export default apiServices;

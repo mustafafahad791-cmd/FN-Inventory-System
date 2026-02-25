@@ -123,6 +123,15 @@ const DashboardPage = () => {
               Go to Logs →
             </button>
           </div>
+
+          <div className="feature-card">
+            <div className="card-icon">📊</div>
+            <h3>Analytics</h3>
+            <p>Business intelligence & reports</p>
+            <button className="card-button" onClick={() => navigate('/analytics')}>
+              Go to Analytics →
+            </button>
+          </div>
         </div>
 
         {/* Quick Stats */}
