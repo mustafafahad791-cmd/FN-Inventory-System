@@ -62,9 +62,16 @@ export const entryTemplateService = {
 
 // Inventory Services
 export const inventoryService = {
-  getByBranch: (branchId) => apiClient.get(`/inventory?branchId=${branchId}`),
-  updateQuantity: (branchId, templateId, quantity) =>
-    apiClient.put('/inventory/quantity', { branchId, entryTemplateId: templateId, quantity })
+  getAll: () => apiClient.get('/inventory'),
+  getById: (id) => apiClient.get(`/inventory/${id}`),
+  getByBranch: (branchId) => apiClient.get(`/inventory/branch/${branchId}`),
+  getByTemplate: (templateId) => apiClient.get(`/inventory/template/${templateId}`),
+  create: (data) => apiClient.post('/inventory', data),
+  update: (id, data) => apiClient.put(`/inventory/${id}`, data),
+  adjust: (id, data) => apiClient.post(`/inventory/${id}/adjust`, data),
+  delete: (id) => apiClient.delete(`/inventory/${id}`),
+  getStats: () => apiClient.get('/inventory/stats'),
+  getLowStock: () => apiClient.get('/inventory/low-stock')
 };
 
 // Receipt Services

@@ -20,6 +20,7 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/branches', require('./routes/branches'));
 app.use('/api/items', require('./routes/items'));
 app.use('/api/entry-templates', require('./routes/entry-templates'));
+app.use('/api/inventory', require('./routes/inventory'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
