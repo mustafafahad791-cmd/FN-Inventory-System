@@ -4,10 +4,8 @@ import { AuthProvider } from './context/AuthContext';
 import { AppProvider } from './context/AppContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import LoginPage from './pages/LoginPage';
-
-function Dashboard() {
-  return <div style={{ padding: '20px' }}>Dashboard (Coming Soon)</div>;
-}
+import HomePage from './pages/HomePage';
+import DashboardPage from './pages/DashboardPage';
 
 function App() {
   return (
@@ -15,16 +13,22 @@ function App() {
       <AuthProvider>
         <AppProvider>
           <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
+            
+            {/* Protected Routes */}
             <Route 
               path="/dashboard" 
               element={
                 <ProtectedRoute>
-                  <Dashboard />
+                  <DashboardPage />
                 </ProtectedRoute>
               } 
             />
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            
+            {/* Catch all - redirect to home */}
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </AppProvider>
       </AuthProvider>

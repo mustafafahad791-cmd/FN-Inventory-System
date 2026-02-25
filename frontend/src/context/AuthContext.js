@@ -6,16 +6,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Check if user is logged in on mount
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      verifyToken(token);
-    } else {
-      setLoading(false);
-    }
-  }, []);
-
   const verifyToken = useCallback(async (token) => {
     try {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/verify`, {
@@ -36,6 +26,16 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   }, []);
+
+  // Check if user is logged in on mount
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      verifyToken(token);
+    } else {
+      setLoading(false);
+    }
+  }, [verifyToken]);
 
   const login = useCallback(async (username, password) => {
     setLoading(true);

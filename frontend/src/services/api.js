@@ -1,5 +1,16 @@
 import apiClient from './apiClient';
 
+// Auth Services
+export const authService = {
+  register: (data) => apiClient.post('/auth/register', data),
+  login: (data) => apiClient.post('/auth/login', data),
+  logout: () => apiClient.post('/auth/logout'),
+  verify: () => apiClient.get('/auth/verify'),
+  getCurrentUser: () => apiClient.get('/auth/me'),
+  updateProfile: (data) => apiClient.put('/auth/profile', data),
+  getAllUsers: () => apiClient.get('/auth/users')
+};
+
 // Branch Services
 export const branchService = {
   getAll: () => apiClient.get('/branches'),
@@ -51,6 +62,7 @@ export const customerService = {
 };
 
 export default {
+  authService,
   branchService,
   itemService,
   entryTemplateService,
