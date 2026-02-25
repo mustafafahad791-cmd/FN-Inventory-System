@@ -16,6 +16,7 @@ const BranchListPage = () => {
 
   useEffect(() => {
     fetchBranches();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchBranches = async () => {

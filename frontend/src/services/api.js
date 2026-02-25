@@ -70,7 +70,7 @@ export const customerService = {
   getPurchaseHistory: (customerId) => apiClient.get(`/customers/${customerId}/history`)
 };
 
-export default {
+const apiServices = {
   authService,
   branchService,
   itemService,
@@ -79,3 +79,5 @@ export default {
   receiptService,
   customerService
 };
+
+export default apiServices;
