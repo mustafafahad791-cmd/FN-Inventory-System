@@ -70,11 +70,13 @@ const DashboardPage = () => {
             </button>
           </div>
 
-          <div className="feature-card coming-soon">
+          <div className="feature-card">
             <div className="card-icon">📝</div>
             <h3>Templates</h3>
             <p>Product variants & specs</p>
-            <span className="badge">Coming Soon</span>
+            <button className="card-button" onClick={() => navigate('/entry-templates')}>
+              Go to Templates →
+            </button>
           </div>
 
           <div className="feature-card coming-soon">

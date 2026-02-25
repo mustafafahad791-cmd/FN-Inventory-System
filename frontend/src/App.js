@@ -8,6 +8,7 @@ import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 import BranchListPage from './pages/BranchListPage';
 import ItemListPage from './pages/ItemListPage';
+import EntryTemplateListPage from './pages/EntryTemplateListPage';
 
 function App() {
   return (
@@ -41,6 +42,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ItemListPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/entry-templates" 
+              element={
+                <ProtectedRoute>
+                  <EntryTemplateListPage />
                 </ProtectedRoute>
               } 
             />
