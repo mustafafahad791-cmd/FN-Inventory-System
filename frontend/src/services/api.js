@@ -53,10 +53,11 @@ export const itemService = {
 export const entryTemplateService = {
   getAll: () => apiClient.get('/entry-templates'),
   getById: (id) => apiClient.get(`/entry-templates/${id}`),
-  getByItemId: (itemId) => apiClient.get(`/entry-templates?itemId=${itemId}`),
+  getByItemId: (itemId) => apiClient.get(`/entry-templates/item/${itemId}`),
   create: (data) => apiClient.post('/entry-templates', data),
   update: (id, data) => apiClient.put(`/entry-templates/${id}`, data),
-  delete: (id) => apiClient.delete(`/entry-templates/${id}`)
+  delete: (id) => apiClient.delete(`/entry-templates/${id}`),
+  getStats: () => apiClient.get('/entry-templates/stats')
 };
 
 // Inventory Services
