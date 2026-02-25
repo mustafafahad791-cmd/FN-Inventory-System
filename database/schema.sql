@@ -1,5 +1,18 @@
 -- FN Furniture Inventory System Database Schema
 
+-- User/Admin Table
+CREATE TABLE "User" (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  username VARCHAR(100) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  full_name VARCHAR(255),
+  role VARCHAR(50) DEFAULT 'admin',
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Branch Table
 CREATE TABLE Branch (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -91,6 +104,8 @@ CREATE TABLE SystemLog (
 );
 
 -- Indexes for performance
+CREATE INDEX idx_user_username ON "User"(username);
+CREATE INDEX idx_user_email ON "User"(email);
 CREATE INDEX idx_inventory_branch ON Inventory(branch_id);
 CREATE INDEX idx_inventory_entry_template ON Inventory(entry_template_id);
 CREATE INDEX idx_receipt_branch ON Receipt(branch_id);
