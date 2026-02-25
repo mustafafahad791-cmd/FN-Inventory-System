@@ -1,0 +1,75 @@
+FN Furniture Inventory System
+Selected Technology Stack
+Frontend (UI): React.js
+Backend: Node.js with Express.js
+Database: PostgreSQL (Cloud-ready, e.g., AWS RDS / Supabase)
+PDF Generation: Server-side PDF library
+Image Receipt: Server-side image rendering
+System Workflow
+1. System Initialization
+- Admin creates branches.
+- Admin creates master Items.
+- Admin creates Entry Templates for each Item.
+2. Dashboard Workflow
+- User logs in.
+- Dashboard shows:
+  • Current Branch
+  • Total Items
+  • Total Entry Templates
+  • Total Stock
+- Global search available.
+3. Item Management Workflow
+- Create new Item (Unique ID auto-generated).
+- Add Entry Templates with specifications.
+- Edit or disable Items.
+- Deletion restricted if linked to inventory.
+4. Inventory Management Workflow
+- Select Branch.
+- Select Entry Template.
+- Add or remove quantity.
+- Quantity updates.
+- If quantity = 0, entry remains stored.
+5. Transfer Workflow
+- Select From Branch.
+- Select To Branch.
+- Select Entry.
+- Enter Quantity.
+- System deducts and adds automatically.
+- Log created with timestamp.
+6. E-Receipt Workflow
+- Select Branch.
+- Select Items & Quantity.
+- Enter Total Price manually.
+- Enter Customer Name or Phone (at least one required).
+- System generates Receipt ID.
+- Timestamp added automatically.
+- Inventory reduced.
+- Receipt downloadable as PDF and Image.
+- Customer stored in Customer Log.
+7. Customer Log Workflow
+- Search by Name, Phone, or Customer ID.
+- View all previous purchases.
+
+8. History Tab Workflow
+Window 1 – Operational History:
+- Search deliveries, transfers, sales.
+
+Window 2 – Complete System Log:
+- Logs all system actions.
+- Each log includes date and time.
+9. Analytics Workflow
+- Displays graphs:
+  • Inventory per Branch
+  • Item Distribution
+- Shows total items, customers, receipts.
+- Filters by branch and date.
+Database Structure Overview
+Tables:
+- Branch
+- Item (Master)
+- EntryTemplate
+- Inventory
+- Customer
+- Receipt
+- ReceiptItems
+- SystemLog
