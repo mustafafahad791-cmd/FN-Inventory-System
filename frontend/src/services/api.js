@@ -74,6 +74,20 @@ export const inventoryService = {
   getLowStock: () => apiClient.get('/inventory/low-stock')
 };
 
+// Transfer Services
+export const transferService = {
+  getAll: () => apiClient.get('/transfers'),
+  getById: (id) => apiClient.get(`/transfers/${id}`),
+  getFromBranch: (branchId) => apiClient.get(`/transfers/from/${branchId}`),
+  getToBranch: (branchId) => apiClient.get(`/transfers/to/${branchId}`),
+  create: (data) => apiClient.post('/transfers', data),
+  confirm: (id) => apiClient.post(`/transfers/${id}/confirm`),
+  cancel: (id) => apiClient.post(`/transfers/${id}/cancel`),
+  delete: (id) => apiClient.delete(`/transfers/${id}`),
+  getStats: () => apiClient.get('/transfers/stats'),
+  getPending: () => apiClient.get('/transfers/pending')
+};
+
 // Receipt Services
 export const receiptService = {
   create: (data) => apiClient.post('/receipts', data),
@@ -95,6 +109,7 @@ const apiServices = {
   itemService,
   entryTemplateService,
   inventoryService,
+  transferService,
   receiptService,
   customerService
 };
