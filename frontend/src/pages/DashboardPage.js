@@ -105,6 +105,15 @@ const DashboardPage = () => {
               Go to Receipts →
             </button>
           </div>
+
+          <div className="feature-card">
+            <div className="card-icon">👥</div>
+            <h3>Customer Log</h3>
+            <p>Purchase history & analytics</p>
+            <button className="card-button" onClick={() => navigate('/customer-log')}>
+              Go to Customers →
+            </button>
+          </div>
         </div>
 
         {/* Quick Stats */}

@@ -12,6 +12,7 @@ import EntryTemplateListPage from './pages/EntryTemplateListPage';
 import InventoryListPage from './pages/InventoryListPage';
 import TransferListPage from './pages/TransferListPage';
 import ReceiptListPage from './pages/ReceiptListPage';
+import CustomerLogPage from './pages/CustomerLogPage';
 
 function App() {
   return (
@@ -77,6 +78,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <ReceiptListPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/customer-log" 
+              element={
+                <ProtectedRoute>
+                  <CustomerLogPage />
                 </ProtectedRoute>
               } 
             />

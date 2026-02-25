@@ -109,6 +109,18 @@ export const customerService = {
   getById: (id) => apiClient.get(`/customers/${id}`)
 };
 
+// Customer Log Services
+export const customerLogService = {
+  getAll: () => apiClient.get('/customer-logs'),
+  getPurchaseHistory: (customerId) => apiClient.get(`/customer-logs/${customerId}`),
+  getTopCustomers: (limit = 10) => apiClient.get('/customer-logs/top', { params: { limit } }),
+  getRepeatCustomers: () => apiClient.get('/customer-logs/repeat'),
+  getPurchaseTrends: (customerId, days = 90) => apiClient.get(`/customer-logs/${customerId}/trends`, { params: { days } }),
+  getCustomerPreferences: (customerId) => apiClient.get(`/customer-logs/${customerId}/preferences`),
+  search: (term) => apiClient.get('/customer-logs/search', { params: { term } }),
+  getAcquisitionTrends: () => apiClient.get('/customer-logs/acquisition-trends')
+};
+
 const apiServices = {
   authService,
   branchService,
@@ -117,7 +129,8 @@ const apiServices = {
   inventoryService,
   transferService,
   receiptService,
-  customerService
+  customerService,
+  customerLogService
 };
 
 export default apiServices;
