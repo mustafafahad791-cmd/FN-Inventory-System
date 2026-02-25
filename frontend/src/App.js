@@ -11,6 +11,7 @@ import ItemListPage from './pages/ItemListPage';
 import EntryTemplateListPage from './pages/EntryTemplateListPage';
 import InventoryListPage from './pages/InventoryListPage';
 import TransferListPage from './pages/TransferListPage';
+import ReceiptListPage from './pages/ReceiptListPage';
 
 function App() {
   return (
@@ -68,6 +69,14 @@ function App() {
               element={
                 <ProtectedRoute>
                   <TransferListPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/receipts" 
+              element={
+                <ProtectedRoute>
+                  <ReceiptListPage />
                 </ProtectedRoute>
               } 
             />

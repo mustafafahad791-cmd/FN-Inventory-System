@@ -93,14 +93,20 @@ export const receiptService = {
   create: (data) => apiClient.post('/receipts', data),
   getAll: () => apiClient.get('/receipts'),
   getById: (id) => apiClient.get(`/receipts/${id}`),
+  getByBranch: (branchId, params) => apiClient.get(`/receipts/branch/${branchId}`, { params }),
+  getByCustomer: (customerId) => apiClient.get(`/receipts/customer/${customerId}`),
+  getStats: () => apiClient.get('/receipts/stats'),
+  getSalesByDateRange: (startDate, endDate) => apiClient.get('/receipts/sales-report', { params: { startDate, endDate } }),
+  search: (term) => apiClient.get('/receipts/search', { params: { term } }),
   downloadPDF: (id) => apiClient.get(`/receipts/${id}/pdf`, { responseType: 'blob' })
 };
 
 // Customer Services
 export const customerService = {
+  getOrCreateCustomer: (data) => apiClient.post('/customers', data),
   search: (query) => apiClient.get(`/customers/search?q=${query}`),
   getAll: () => apiClient.get('/customers'),
-  getPurchaseHistory: (customerId) => apiClient.get(`/customers/${customerId}/history`)
+  getById: (id) => apiClient.get(`/customers/${id}`)
 };
 
 const apiServices = {

@@ -97,11 +97,13 @@ const DashboardPage = () => {
             </button>
           </div>
 
-          <div className="feature-card coming-soon">
+          <div className="feature-card">
             <div className="card-icon">🛒</div>
             <h3>Receipts</h3>
             <p>Sales & transactions</p>
-            <span className="badge">Coming Soon</span>
+            <button className="card-button" onClick={() => navigate('/receipts')}>
+              Go to Receipts →
+            </button>
           </div>
         </div>
 
