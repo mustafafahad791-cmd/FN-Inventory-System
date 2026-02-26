@@ -28,6 +28,16 @@ app.use('/api/customer-logs', require('./routes/customer-logs'));
 app.use('/api/system-logs', require('./routes/system-logs'));
 app.use('/api/analytics', require('./routes/analytics'));
 
+// 404 Handler - must be before error middleware
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route not found: ${req.method} ${req.path}`,
+    path: req.path,
+    method: req.method
+  });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);

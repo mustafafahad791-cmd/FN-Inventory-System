@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
 
   const verifyToken = useCallback(async (token) => {
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/verify`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/verify`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
   const login = useCallback(async (username, password) => {
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
