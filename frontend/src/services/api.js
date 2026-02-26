@@ -161,4 +161,25 @@ const apiServices = {
   analyticsService
 };
 
+// Convenience exports for direct api calls
+export const api = {
+  // Item operations
+  getItems: (page = 1) => apiClient.get('/api/items', { params: { page } }),
+  getItemById: (id) => apiClient.get(`/api/items/${id}`),
+  createItem: (data) => apiClient.post('/api/items', data),
+  updateItem: (id, data) => apiClient.put(`/api/items/${id}`, data),
+  deactivateItem: (id) => apiClient.delete(`/api/items/${id}`),
+  searchItems: (query, category) => apiClient.get('/api/items/search', { params: { q: query, category } }),
+  getItemStats: (id) => apiClient.get(`/api/items/${id}/stats`),
+
+  // Branch operations
+  getBranches: (page = 1) => apiClient.get('/api/branches', { params: { page } }),
+  getBranchById: (id) => apiClient.get(`/api/branches/${id}`),
+  createBranch: (data) => apiClient.post('/api/branches', data),
+  updateBranch: (id, data) => apiClient.put(`/api/branches/${id}`, data),
+  deactivateBranch: (id) => apiClient.delete(`/api/branches/${id}`),
+  searchBranches: (query) => apiClient.get('/api/branches/search', { params: { q: query } }),
+  getBranchStats: (id) => apiClient.get(`/api/branches/${id}/stats`),
+};
+
 export default apiServices;

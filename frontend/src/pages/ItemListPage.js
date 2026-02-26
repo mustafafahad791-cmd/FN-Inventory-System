@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ItemForm from '../components/ItemForm';
-import { authService } from '../services/api';
+import { api } from '../services/api';
 import '../styles/ItemManagement.css';
 
 const ItemListPage = () => {
@@ -17,30 +17,24 @@ const ItemListPage = () => {
 
   useEffect(() => {
     fetchItems();
-    fetchCategories();
   }, []);
 
   const fetchItems = async () => {
     setLoading(true);
     setError('');
     try {
-      const response = await authService.getItems();
+      const response = await api.getItems();
       setItems(response.data);
       setFilteredItems(response.data);
+      
+      // Extract unique categories
+      const cats = [...new Set(response.data.map(item => item.category).filter(Boolean))];
+      setCategories(cats.sort());
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch items');
+      setError(err.response?.data?.error || 'Failed to fetch items');
       console.error('Error fetching items:', err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchCategories = async () => {
-    try {
-      const response = await authService.getItemCategories();
-      setCategories(response.data);
-    } catch (err) {
-      console.error('Error fetching categories:', err);
     }
   };
 
@@ -96,15 +90,15 @@ const ItemListPage = () => {
   const handleSave = async (formData, itemId) => {
     try {
       if (formMode === 'create') {
-        const response = await authService.createItem(formData);
+        const response = await api.createItem(formData);
         setItems([...items, response.data]);
         setFilteredItems([...filteredItems, response.data]);
         // Add category if new
-        if (!categories.includes(response.data.category)) {
+        if (response.data.category && !categories.includes(response.data.category)) {
           setCategories([...categories, response.data.category].sort());
         }
       } else if (formMode === 'edit' && itemId) {
-        const response = await authService.updateItem(itemId, formData);
+        const response = await api.updateItem(itemId, formData);
         const updatedItems = items.map((i) =>
           i.id === itemId ? response.data : i
         );
@@ -115,7 +109,7 @@ const ItemListPage = () => {
           )
         );
         // Update category list if new category added
-        if (!categories.includes(response.data.category)) {
+        if (response.data.category && !categories.includes(response.data.category)) {
           setCategories([...categories, response.data.category].sort());
         }
       }
@@ -132,14 +126,14 @@ const ItemListPage = () => {
       )
     ) {
       try {
-        await authService.deactivateItem(itemId);
+        await api.deactivateItem(itemId);
         const updatedItems = items.filter((i) => i.id !== itemId);
         setItems(updatedItems);
         setFilteredItems(
           filteredItems.filter((i) => i.id !== itemId)
         );
       } catch (err) {
-        setError(err.response?.data?.message || 'Failed to deactivate item');
+        setError(err.response?.data?.error || 'Failed to deactivate item');
       }
     }
   };

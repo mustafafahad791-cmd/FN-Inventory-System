@@ -4,6 +4,7 @@ import '../styles/ItemManagement.css';
 const ItemForm = ({ item, isOpen, onClose, onSave, onError, categories }) => {
   const [formData, setFormData] = useState({
     name: '',
+    unique_id: '',
     category: '',
     description: '',
   });
@@ -15,6 +16,7 @@ const ItemForm = ({ item, isOpen, onClose, onSave, onError, categories }) => {
     if (item && isOpen) {
       setFormData({
         name: item.name || '',
+        unique_id: item.unique_id || '',
         category: item.category || '',
         description: item.description || '',
       });
@@ -23,6 +25,7 @@ const ItemForm = ({ item, isOpen, onClose, onSave, onError, categories }) => {
     } else if (isOpen) {
       setFormData({
         name: '',
+        unique_id: '',
         category: '',
         description: '',
       });
@@ -31,15 +34,35 @@ const ItemForm = ({ item, isOpen, onClose, onSave, onError, categories }) => {
     }
   }, [item, isOpen]);
 
+  const generateSKU = () => {
+    if (formData.name.trim()) {
+      const namePrefix = formData.name
+        .trim()
+        .substring(0, 3)
+        .toUpperCase()
+        .replace(/\s/g, '');
+      const timestamp = Date.now().toString().slice(-4);
+      const sku = `${namePrefix}-${timestamp}`;
+      setFormData((prev) => ({
+        ...prev,
+        unique_id: sku,
+      }));
+    }
+  };
+
   const validateForm = () => {
     const errors = {};
 
     if (!formData.name || formData.name.trim() === '') {
       errors.name = 'Item name is required';
+    } else if (formData.name.trim().length < 2) {
+      errors.name = 'Item name must be at least 2 characters';
     }
 
-    if (!formData.category || formData.category.trim() === '') {
-      errors.category = 'Category is required';
+    if (!formData.unique_id || formData.unique_id.trim() === '') {
+      errors.unique_id = 'SKU is required';
+    } else if (formData.unique_id.trim().length < 2) {
+      errors.unique_id = 'SKU must be at least 2 characters';
     }
 
     setValidationErrors(errors);
@@ -74,14 +97,15 @@ const ItemForm = ({ item, isOpen, onClose, onSave, onError, categories }) => {
     try {
       const submitData = {
         name: formData.name.trim(),
-        category: formData.category.trim(),
+        unique_id: formData.unique_id.trim(),
+        category: formData.category.trim() || null,
         description: formData.description.trim() || null,
       };
 
       await onSave(submitData, item?.id);
       onClose();
     } catch (err) {
-      const errorMessage = err.response?.data?.message || err.message || 'Failed to save item';
+      const errorMessage = err.response?.data?.error || err.message || 'Failed to save item';
       setError(errorMessage);
       if (onError) {
         onError(errorMessage);
@@ -127,21 +151,51 @@ const ItemForm = ({ item, isOpen, onClose, onSave, onError, categories }) => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="category">Category *</label>
-            <select
+            <label htmlFor="unique_id">SKU (Stock Keeping Unit) *</label>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input
+                type="text"
+                id="unique_id"
+                name="unique_id"
+                value={formData.unique_id}
+                onChange={handleChange}
+                placeholder="e.g., CHAIR-0001"
+                disabled={loading}
+              />
+              <button
+                type="button"
+                className="btn-generate-sku"
+                onClick={generateSKU}
+                disabled={loading || !formData.name}
+                title="Auto-generate SKU from name"
+              >
+                Generate
+              </button>
+            </div>
+            {validationErrors.unique_id && (
+              <span style={{ color: '#d32f2f', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                {validationErrors.unique_id}
+              </span>
+            )}
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="category">Category</label>
+            <input
+              type="text"
               id="category"
               name="category"
               value={formData.category}
               onChange={handleChange}
+              placeholder="e.g., Seating, Tables, Beds..."
               disabled={loading}
-            >
-              <option value="">-- Select or Type Category --</option>
-              {categories.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
+              list="categoryList"
+            />
+            <datalist id="categoryList">
+              {categories && categories.map((cat) => (
+                <option key={cat} value={cat} />
               ))}
-            </select>
+            </datalist>
             {validationErrors.category && (
               <span style={{ color: '#d32f2f', fontSize: '12px', marginTop: '4px', display: 'block' }}>
                 {validationErrors.category}
@@ -158,6 +212,7 @@ const ItemForm = ({ item, isOpen, onClose, onSave, onError, categories }) => {
               onChange={handleChange}
               placeholder="e.g., High-quality wooden dining chair with cushioned seat"
               disabled={loading}
+              rows="4"
             />
           </div>
 

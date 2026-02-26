@@ -7,31 +7,50 @@ const { authenticateToken } = require('../middleware/auth');
 // All item endpoints require authentication
 router.use(authenticateToken);
 
-// Get all items
-router.get('/', ItemController.getAll);
+/**
+ * GET /api/items
+ * Get all active items with pagination
+ */
+router.get('/', ItemController.getAllItems);
 
-// Get item statistics
-router.get('/stats', ItemController.getStats);
+/**
+ * GET /api/items/search?q=query&category=category
+ * Search items by name, SKU, or category
+ * Must be before /:id route
+ */
+router.get('/search', ItemController.searchItems);
 
-// Search items by name or category
-router.get('/search', ItemController.search);
+/**
+ * GET /api/items/:id
+ * Get single item by ID with statistics
+ */
+router.get('/:id', ItemController.getItemById);
 
-// Get items by category
-router.get('/category/:category', ItemController.getByCategory);
+/**
+ * GET /api/items/:id/stats
+ * Get statistics for specific item
+ * Must be before /:id route
+ */
+router.get('/:id/stats', ItemController.getItemStats);
 
-// Get all categories
-router.get('/categories/all', ItemController.getCategories);
+/**
+ * POST /api/items
+ * Create a new item (master product)
+ * Body: { name, unique_id, category, description }
+ */
+router.post('/', ItemController.createItem);
 
-// Get single item by ID (must be after /stats and /search)
-router.get('/:id', ItemController.getById);
+/**
+ * PUT /api/items/:id
+ * Update an item
+ * Body: { name, unique_id, category, description }
+ */
+router.put('/:id', ItemController.updateItem);
 
-// Create new item
-router.post('/', ItemController.create);
-
-// Update item
-router.put('/:id', ItemController.update);
-
-// Deactivate item
-router.delete('/:id', ItemController.deactivate);
+/**
+ * DELETE /api/items/:id
+ * Deactivate (soft delete) an item
+ */
+router.delete('/:id', ItemController.deactivateItem);
 
 module.exports = router;
