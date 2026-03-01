@@ -41,7 +41,7 @@ exports.createItem = async (req, res) => {
 
     // Database insert with prepared statement
     const result = await query(
-      `INSERT INTO item (name, unique_id, category, description, is_active, created_at, updated_at) 
+      `INSERT INTO Item (name, unique_id, category, description, is_active, created_at, updated_at) 
        VALUES ($1, $2, $3, $4, true, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) 
        RETURNING id, name, unique_id, category, description, is_active, created_at, updated_at`,
       [trimmedName, trimmedSKU, trimmedCategory, trimmedDescription]
@@ -92,14 +92,14 @@ exports.getAllItems = async (req, res) => {
 
     // Get total count
     const countResult = await query(
-      'SELECT COUNT(*) as total FROM item WHERE is_active = true'
+      'SELECT * FROM Item WHERE is_active = true'
     );
     const total = countResult.rows[0].total;
 
     // Get items with pagination
     const result = await query(
       `SELECT id, name, unique_id, category, description, is_active, created_at, updated_at 
-       FROM item 
+       FROM Item 
        WHERE is_active = true 
        ORDER BY created_at DESC 
        LIMIT $1 OFFSET $2`,
@@ -145,7 +145,7 @@ exports.getItemById = async (req, res) => {
 
     const result = await query(
       `SELECT id, name, unique_id, category, description, is_active, created_at, updated_at 
-       FROM item 
+       FROM Item 
        WHERE id = $1`,
       [id]
     );
@@ -207,7 +207,7 @@ exports.updateItem = async (req, res) => {
 
     // Check if item exists
     const checkResult = await query(
-      'SELECT id FROM item WHERE id = $1',
+      'SELECT * FROM Item WHERE id = $1',
       [id]
     );
 
@@ -274,7 +274,7 @@ exports.updateItem = async (req, res) => {
 
     updates.push(`updated_at = CURRENT_TIMESTAMP`);
 
-    const sql = `UPDATE item SET ${updates.join(', ')} WHERE id = $1 RETURNING id, name, unique_id, category, description, is_active, created_at, updated_at`;
+    const sql = `UPDATE Item SET ${updates.join(', ')} WHERE id = $1 RETURNING id, name, unique_id, category, description, is_active, created_at, updated_at`;
 
     const result = await query(sql, values);
 
@@ -298,7 +298,7 @@ exports.updateItem = async (req, res) => {
 
     return res.status(500).json({
       success: false,
-      error: 'Failed to update item',
+      error: 'Failed to UPDATE Item',
       code: 'SERVER_ERROR'
     });
   }
@@ -321,7 +321,7 @@ exports.searchItems = async (req, res) => {
 
     const searchTerm = `%${q.trim()}%`;
     let sql = `SELECT id, name, unique_id, category, description, is_active, created_at, updated_at 
-               FROM item 
+               FROM Item 
                WHERE is_active = true AND (name ILIKE $1 OR unique_id ILIKE $1 OR category ILIKE $1)`;
     const params = [searchTerm];
 
@@ -367,7 +367,7 @@ exports.deactivateItem = async (req, res) => {
 
     // Check if item exists
     const checkResult = await query(
-      'SELECT id, is_active FROM item WHERE id = $1',
+      'SELECT * FROM Item WHERE id = $1',
       [id]
     );
 
@@ -389,7 +389,7 @@ exports.deactivateItem = async (req, res) => {
 
     // Soft delete - set is_active to false
     const result = await query(
-      `UPDATE item SET is_active = false, updated_at = CURRENT_TIMESTAMP WHERE id = $1 
+      `UPDATE Item SET is_active = false, updated_at = CURRENT_TIMESTAMP WHERE id = $1 
        RETURNING id, name, unique_id, category, description, is_active, created_at, updated_at`,
       [id]
     );
@@ -427,7 +427,7 @@ exports.getItemStats = async (req, res) => {
 
     // Check if item exists
     const checkResult = await query(
-      'SELECT id, name FROM item WHERE id = $1',
+      'SELECT * FROM Item WHERE id = $1',
       [id]
     );
 
@@ -493,3 +493,4 @@ exports.getItemStats = async (req, res) => {
     });
   }
 };
+

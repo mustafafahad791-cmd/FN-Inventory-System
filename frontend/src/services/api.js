@@ -180,6 +180,15 @@ export const api = {
   deactivateBranch: (id) => apiClient.delete(`/api/branches/${id}`),
   searchBranches: (query) => apiClient.get('/api/branches/search', { params: { q: query } }),
   getBranchStats: (id) => apiClient.get(`/api/branches/${id}/stats`),
+
+  // Entry Template operations
+  getTemplates: (page = 1) => apiClient.get('/api/entry-templates', { params: { page } }),
+  getTemplateById: (id) => apiClient.get(`/api/entry-templates/${id}`),
+  createTemplate: (data) => apiClient.post('/api/entry-templates', data),
+  updateTemplate: (id, data) => apiClient.put(`/api/entry-templates/${id}`, data),
+  deactivateTemplate: (id) => apiClient.delete(`/api/entry-templates/${id}`),
+  searchTemplates: (query, itemId, page = 1) => apiClient.get('/api/entry-templates/search', { params: { q: query, item_id: itemId, page } }),
+  getTemplateStats: (id) => apiClient.get(`/api/entry-templates/${id}/stats`),
 };
 
 export default apiServices;

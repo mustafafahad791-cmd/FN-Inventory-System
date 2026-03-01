@@ -1,76 +1,69 @@
 import React, { useState, useEffect } from 'react';
-import { entryTemplateService, itemService } from '../services/api';
+import { api } from '../services/api';
 import EntryTemplateForm from '../components/EntryTemplateForm';
 import '../styles/EntryTemplateManagement.css';
 
 const EntryTemplateListPage = () => {
   const [templates, setTemplates] = useState([]);
-  const [filteredTemplates, setFilteredTemplates] = useState([]);
   const [items, setItems] = useState([]);
   const [selectedItem, setSelectedItem] = useState(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formMode, setFormMode] = useState('create');
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
-  const [stats, setStats] = useState(null);
+  const [pagination, setPagination] = useState({ page: 1, limit: 20, total: 0, pages: 0 });
 
-  // Fetch all templates and items
-  const fetchData = async () => {
+  // Fetch templates with pagination
+  const fetchTemplates = async (page = 1, itemId = null) => {
     try {
       setLoading(true);
       setError(null);
       
-      const [templatesRes, itemsRes, statsRes] = await Promise.all([
-        entryTemplateService.getAll(),
-        itemService.getItems(),
-        entryTemplateService.getStats()
-      ]);
+      let response;
+      if (searchTerm) {
+        response = await api.searchTemplates(searchTerm, itemId, page);
+      } else {
+        response = await api.getTemplates(page);
+      }
 
-      setTemplates(templatesRes.data);
-      setFilteredTemplates(templatesRes.data);
-      setItems(itemsRes.data);
-      setStats(statsRes.data);
+      setTemplates(response.data);
+      setPagination(response.pagination);
     } catch (err) {
-      console.error('Error fetching data:', err);
-      setError('Failed to load entry templates');
+      console.error('Error fetching templates:', err);
+      setError(err.response?.data?.error || 'Failed to load templates');
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  // Handle search
-  const handleSearch = (e) => {
-    const term = e.target.value.toLowerCase();
-    setSearchTerm(term);
+  // Fetch items for filter
+  const fetchItems = async () => {
+    try {
+      const response = await api.getItems();
+      setItems(response.data);
+    } catch (err) {
+      console.error('Error fetching items:', err);
+    }
+  };
     
-    const filtered = templates.filter(template =>
-      template.name.toLowerCase().includes(term) ||
-      template.item?.name.toLowerCase().includes(term) ||
-      template.item?.category.toLowerCase().includes(term)
-    );
-
-    setFilteredTemplates(filtered);
+    if (term || selectedItem) {
+      fetchTemplates(1, selectedItem);
+    } else {
+      fetchTemplates(1);
+    }
   };
 
   // Handle item filter
   const handleItemFilter = (e) => {
     const itemId = e.target.value;
     setSelectedItem(itemId || null);
-
-    if (!itemId) {
-      setFilteredTemplates(templates.filter(t => 
-        t.name.toLowerCase().includes(searchTerm)
-      ));
+    
+    if (searchTerm || itemId) {
+      fetchTemplates(1, itemId);
     } else {
-      setFilteredTemplates(templates.filter(t =>
-        t.item_id === itemId && t.name.toLowerCase().includes(searchTerm)
-      ));
+      fetchTemplates(1);
     }
   };
 
@@ -98,99 +91,72 @@ const EntryTemplateListPage = () => {
   const handleSave = async (formData) => {
     try {
       if (formMode === 'create') {
-        const response = await entryTemplateService.create(formData);
-        setTemplates([...templates, response.data]);
-        setFilteredTemplates([...filteredTemplates, response.data]);
+        await api.createTemplate(formData);
       } else {
-        const response = await entryTemplateService.update(selectedTemplate.id, formData);
-        const updated = templates.map(t => 
-          t.id === selectedTemplate.id ? response.data : t
-        );
-        setTemplates(updated);
-        setFilteredTemplates(updated);
+        await api.updateTemplate(selectedTemplate.id, formData);
       }
       
-      // Refresh stats
-      const statsRes = await entryTemplateService.getStats();
-      setStats(statsRes.data);
-      
       handleCloseForm();
+      fetchTemplates(pagination.page, selectedItem);
     } catch (err) {
       console.error('Error saving template:', err);
       setError(err.response?.data?.error || 'Failed to save template');
     }
   };
 
-  // Handle delete
+  // Handle delete/deactivate
   const handleDelete = async (templateId) => {
     if (!window.confirm('Are you sure you want to deactivate this template?')) {
       return;
     }
 
     try {
-      await entryTemplateService.delete(templateId);
-      const updated = templates.filter(t => t.id !== templateId);
-      setTemplates(updated);
-      setFilteredTemplates(updated);
-      
-      // Refresh stats
-      const statsRes = await entryTemplateService.getStats();
-      setStats(statsRes.data);
+      await api.deactivateTemplate(templateId);
+      fetchTemplates(pagination.page, selectedItem);
     } catch (err) {
-      console.error('Error deleting template:', err);
-      setError('Failed to delete template');
+      console.error('Error deactivating template:', err);
+      setError(err.response?.data?.error || 'Failed to deactivate template');
     }
   };
 
+  // Handle pagination
+  const handlePageChange = (newPage) => {
+    fetchTemplates(newPage, selectedItem);
+  };
+
   return (
-    <div className="entry-template-container">
+    <div className="entry-template-management-container">
       <div className="entry-template-header">
-        <h1>Entry Templates</h1>
-        <p>Create templates for items with pre-defined specifications and pricing</p>
+        <h1>📋 Entry Templates</h1>
+        <p>Create product variants with specifications and pricing</p>
       </div>
 
-      {error && <div className="error-message">{error}</div>}
-
-      {/* Stats */}
-      {stats && (
-        <div className="stats-section">
-          <div className="stat-card">
-            <div className="stat-number">{stats.total}</div>
-            <div className="stat-label">Total Templates</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-number">${stats.averagePrice}</div>
-            <div className="stat-label">Avg. Price</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-number">${stats.priceRange.min}-${stats.priceRange.max}</div>
-            <div className="stat-label">Price Range</div>
-          </div>
-        </div>
-      )}
+      {error && <div className="error-message">⚠️ {error}</div>}
 
       {/* Controls */}
       <div className="controls-section">
-        <input
-          type="text"
-          placeholder="Search templates or items..."
-          value={searchTerm}
-          onChange={handleSearch}
-          className="search-input"
-        />
-        
-        <select 
-          value={selectedItem || ''} 
-          onChange={handleItemFilter}
-          className="filter-select"
-        >
-          <option value="">All Items</option>
-          {items.map(item => (
-            <option key={item.id} value={item.id}>
-              {item.name} ({item.category})
-            </option>
-          ))}
-        </select>
+        <div className="search-filter-group">
+          <input
+            type="text"
+            placeholder="Search by name or SKU..."
+            value={searchTerm}
+            onChange={handleSearch}
+            className="search-input"
+          />
+          
+          <select 
+            value={selectedItem || ''} 
+            onChange={handleItemFilter}
+            className="filter-select"
+          >
+            <option value="">All Items</option>
+            {items.map(item => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <button className="btn btn-primary" onClick={handleCreateNew}>
           ➕ Add Template
@@ -199,8 +165,8 @@ const EntryTemplateListPage = () => {
 
       {/* Content */}
       {loading ? (
-        <div className="loading-spinner"></div>
-      ) : filteredTemplates.length === 0 ? (
+        <div className="loading-spinner">Loading templates...</div>
+      ) : templates.length === 0 ? (
         <div className="empty-state">
           <div className="empty-icon">📋</div>
           <h3>No templates found</h3>
@@ -210,65 +176,94 @@ const EntryTemplateListPage = () => {
           </button>
         </div>
       ) : (
-        <div className="templates-grid">
-          {filteredTemplates.map(template => (
-            <div key={template.id} className="template-card">
-              <div className="template-header">
-                <h3>{template.name}</h3>
-                <span className="template-id">{template.id.slice(0, 8)}</span>
-              </div>
-
-              {template.item && (
-                <div className="template-item">
-                  <strong>{template.item.name}</strong>
-                  <span className="item-category">{template.item.category}</span>
+        <>
+          <div className="templates-grid">
+            {templates.map(template => (
+              <div key={template.id} className="template-card">
+                <div className="template-header">
+                  <div>
+                    <h3>{template.template_name}</h3>
+                    <p className="template-sku">{template.sku}</p>
+                  </div>
                 </div>
-              )}
 
-              {template.unit_price && (
-                <div className="template-price">
-                  <span>Unit Price:</span>
-                  <span className="price">${parseFloat(template.unit_price).toFixed(2)}</span>
+                {template.item_name && (
+                  <div className="template-item">
+                    <span className="item-label">Item:</span>
+                    <strong>{template.item_name}</strong>
+                  </div>
+                )}
+
+                {template.unit_price && (
+                  <div className="template-price">
+                    <span className="price-label">Unit Price:</span>
+                    <span className="price">${parseFloat(template.unit_price).toFixed(2)}</span>
+                  </div>
+                )}
+
+                {template.specifications && Object.keys(template.specifications).length > 0 && (
+                  <div className="template-specs">
+                    <h5>Specs:</h5>
+                    <div className="specs-list">
+                      {Object.entries(template.specifications).map(([key, value]) => (
+                        <div key={key} className="spec-item">
+                          <span className="spec-key">{key}:</span>
+                          <span className="spec-value">{String(value)}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                <div className="template-date">
+                  Created: {new Date(template.created_at).toLocaleDateString()}
                 </div>
-              )}
 
-              {template.specifications && Object.keys(template.specifications).length > 0 && (
-                <div className="template-specs">
-                  <h5>Specifications:</h5>
-                  <ul>
-                    {Object.entries(template.specifications).slice(0, 3).map(([key, value]) => (
-                      <li key={key}>
-                        <strong>{key}:</strong> {String(value)}
-                      </li>
-                    ))}
-                  </ul>
-                  {Object.keys(template.specifications).length > 3 && (
-                    <div className="specs-more">+{Object.keys(template.specifications).length - 3} more</div>
-                  )}
+                <div className="template-actions">
+                  <button 
+                    className="btn btn-secondary" 
+                    onClick={() => handleEdit(template)}
+                    title="Edit template"
+                  >
+                    ✏️ Edit
+                  </button>
+                  <button 
+                    className="btn btn-danger" 
+                    onClick={() => handleDelete(template.id)}
+                    title="Deactivate template"
+                  >
+                    🗑️ Delete
+                  </button>
                 </div>
-              )}
-
-              <div className="template-date">
-                Created: {new Date(template.created_at).toLocaleDateString()}
               </div>
+            ))}
+          </div>
 
-              <div className="template-actions">
-                <button 
-                  className="btn btn-secondary" 
-                  onClick={() => handleEdit(template)}
-                >
-                  ✏️ Edit
-                </button>
-                <button 
-                  className="btn btn-danger" 
-                  onClick={() => handleDelete(template.id)}
-                >
-                  🗑️ Delete
-                </button>
-              </div>
+          {/* Pagination */}
+          {pagination.pages > 1 && (
+            <div className="pagination">
+              <button 
+                className="btn btn-sm"
+                onClick={() => handlePageChange(pagination.page - 1)}
+                disabled={pagination.page === 1}
+              >
+                ← Previous
+              </button>
+              
+              <span className="pagination-info">
+                Page {pagination.page} of {pagination.pages}
+              </span>
+              
+              <button 
+                className="btn btn-sm"
+                onClick={() => handlePageChange(pagination.page + 1)}
+                disabled={pagination.page === pagination.pages}
+              >
+                Next →
+              </button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
 
       {/* Form Modal */}
